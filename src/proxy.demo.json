@@ -1,0 +1,8 @@
+{
+    "/webshark/*": {
+        "target": "http://de4.sipcapture.io:8085/",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    }
+}
