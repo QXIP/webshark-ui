@@ -7,7 +7,11 @@ _User-Interface builder for [**webShark**](https://github.com/QXIP/webshark), a 
 <img src="https://github.com/QXIP/webshark/assets/1423657/092c2544-f5db-4a79-b3da-d48df4e0813c" width=600 />
 
 
-## Get Latest Distribution
+### Latest Distribution
 ```
 wget github.com/qxip/webshark-ui/releases/latest/download/latest.zip
 ```
+
+### License
+Released under the AGPLv3 License.<br>
+Copyright by QXIP BV, Some rights Reserved.
