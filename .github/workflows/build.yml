@@ -26,3 +26,24 @@ jobs:
       run: |
         npm install
         npm run build
+
+    - uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: ./dist
+          retention-days: 1
+
+  publish:
+    needs: build 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Packaging repository
+        uses: actions/checkout@v3
+      - uses: actions/download-artifact@master
+        with:
+          name: dist
+      - name: Checkpoint
+        run: |
+          ls -alFh
+          ls -alFh dist
+
