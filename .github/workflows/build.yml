@@ -43,7 +43,7 @@ jobs:
       - name: Checkpoint
         run: |
           ls -alFh webshark
-          cd webshark && sudo zip -r ./latest.zip .
+          cd webshark && sudo zip -r ../latest.zip .
       - name: Upload Release
         uses: softprops/action-gh-release@v0.1.15
         with:
