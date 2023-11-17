@@ -14,6 +14,7 @@ import {
 import { HighlightService } from '@app/services/hightlight.service';
 import { AlertService } from '../alert/alert.service';
 import { CustomTableComponent } from '../custom-table/custom-table.component';
+import { environment } from './../../../../environments/environment';
 
 @Component({
   selector: 'app-webshark',
@@ -34,6 +35,7 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
   highlight: any;
   sizeUp: boolean = false;
   selectedHexArray: any[] = [];
+  isKIOSK = !!environment.kiosk;
   @Input() fileList: any = [];
   @Input() framePosition: any = ['horizontal', 'vertical'];
   @Input() set range(val: any) {

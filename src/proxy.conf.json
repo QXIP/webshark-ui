@@ -1,6 +1,6 @@
 {
-    "/webshark/json*": {
-        "target": "http://de4.sipcapture.io:8085/",
+    "/webshark/*": {
+        "target": "http://localhost:8085/",
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
