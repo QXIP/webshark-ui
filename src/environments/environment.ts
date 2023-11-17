@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl:'/webshark/',
+  apiUrl: '/webshark/',
+  kiosk: false
 };
 
 /*

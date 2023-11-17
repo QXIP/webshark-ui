@@ -57,13 +57,26 @@
               ],
               "outputHashing": "all"
             },
-            "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+            "kiosk": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "5500kb",
+                  "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "20kb",
+                  "maximumError": "100kb"
+                }
+              ],
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.kiosk.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -74,11 +87,11 @@
             "production": {
               "browserTarget": "webshark:build:production"
             },
-            "development": {
-              "browserTarget": "webshark:build:development"
+            "kiosk": {
+              "browserTarget": "webshark:build:kiosk"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "production"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

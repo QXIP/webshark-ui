@@ -4,8 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config src/proxy.conf.json --host=0.0.0.0 --port=8003 --disable-host-check",
+    "start:kiosk": "ng serve --proxy-config src/proxy.conf.json --configuration kiosk --host=0.0.0.0 --port=8003 --disable-host-check",
     "demo": "ng serve --proxy-config src/proxy.demo.json --host=0.0.0.0 --port=8004 --disable-host-check",
     "build": "ng build --configuration production",
+    "build:kiosk": "ng build --configuration kiosk",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
