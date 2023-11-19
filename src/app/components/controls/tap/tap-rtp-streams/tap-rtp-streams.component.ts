@@ -69,7 +69,7 @@ export class TapRtpStreamsComponent implements OnInit {
       isDone = done;
     }
 
-    console.log({ collectArrayData });
+    // console.log({ collectArrayData });
     return new Blob(collectArrayData, { type: DATA_TYPE });
 
   }
@@ -88,7 +88,7 @@ export class TapRtpStreamsComponent implements OnInit {
     this.progressMessage.push(`Reading data from ${this.captureFile} file`);
     this.cdr.detectChanges();
     const blobData: Blob = await this.getFileArrayOfUint8Array(this.captureFile);
-    console.log(this.captureFile, { blobData });
+    // console.log(this.captureFile, { blobData });
     // const blobUrl = await transcode(blobData);
     // console.log(blobUrl)
 
@@ -104,12 +104,12 @@ export class TapRtpStreamsComponent implements OnInit {
       offset += 16;
       return [offset, ...i.c, blobData.slice(offset, offset + +i.c[5], DATA_TYPE)];
     })
-    console.log(arrOffset);
+    // console.log(arrOffset);
     this.progressMessage.push('Collect payload binary to streams')
     this.cdr.detectChanges();
     // rtp-streams
     const { taps: [{ streams: rtpStreams }] } = await this.webSharkDataService.getTapJson('rtp-streams');
-    console.log(rtpStreams);
+    // console.log(rtpStreams);
 
     const arr = rtpStreams.map((streamData: any) => {
       return {
@@ -120,7 +120,7 @@ export class TapRtpStreamsComponent implements OnInit {
           .map((i: any) => (i[8] as Blob).slice(54)), { type: DATA_TYPE })
       };
     })
-    console.log({ arr })
+    // console.log({ arr })
     const codecDictionary: any = {
       'g711a': 'alaw',
       'g711u': 'mulaw',
@@ -128,16 +128,16 @@ export class TapRtpStreamsComponent implements OnInit {
     };
     const out: any[] = [];
     for (let item of arr) {
-      console.log('<>>>>', item.data);
+      // console.log('<>>>>', item.data);
 
       const codec = codecDictionary[(item.data.payload + '').toLowerCase()] || 'g722';
-      console.log('<>>>>', {codec});
+      // console.log('<>>>>', {codec});
 
       // const i = arr[0];
       this.progressMessage.push(`FFmpeg:: converting ${item.ssrc} stream to audio (mp3)`);
       this.cdr.detectChanges();
       const blobUrl = await transcode(item.blob, codec, `audio-${item.ssrc}.mp3`);
-      console.log(blobUrl)
+      // console.log(blobUrl)
 
       out.push({ ssrc: item.ssrc, blobUrl });
       this.blobSaveAsFile(blobUrl, `audio-${item.ssrc}.mp3`);
@@ -205,14 +205,14 @@ export class TapRtpStreamsComponent implements OnInit {
 
   }
   async rowClick({ row }: any) {
-    console.log({ row });
+    // console.log({ row });
     const id = `player-${hash(JSON.stringify(row))}`;
     let playerElement = this.players.find(p => p.id === id);
     if (!playerElement) {
       const rowData = await this.webSharkDataService.getRTPStreamTap(row);
       // const mp3link = this.webSharkDataService.getMp3LinkByRowData(row);
       const { taps: [{ ssrc }] } = rowData;
-      console.log(this.audioStreamsBlobURL, { rowData })
+      // console.log(this.audioStreamsBlobURL, { rowData })
 
       playerElement = {
         id,
@@ -246,7 +246,7 @@ export class TapRtpStreamsComponent implements OnInit {
     console.log({ event });
   }
   onZoomAudio(event: any, player: any) {
-    console.log(event.wheelDelta);
+    // console.log(event.wheelDelta);
     if (!player._myZoom) {
       player._myZoom = 1;
     }

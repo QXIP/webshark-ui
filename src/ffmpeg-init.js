@@ -8,7 +8,7 @@ if (!self.crossOriginIsolated) {
 
 const { createFFmpeg, fetchFile } = FFmpeg;
 const ffmpeg = createFFmpeg({
-  log: true,
+  log: false,
   corePath: "./ffmpeg/ffmpeg-core.js",
   progress: ({ ratio }) => {
     message.innerHTML = `Complete: ${(ratio * 100.0).toFixed(2)}%`;
@@ -88,7 +88,7 @@ const defaults = {
 
 const transcode = async (blobData, codec, output) => {
   try {
-    console.log("Loading ffmpeg-core.js");
+    // console.log("Loading ffmpeg-core.js");
 
     if (!ffmpeg.isLoaded()) {
       await ffmpeg.load();
@@ -122,7 +122,7 @@ const transcode = async (blobData, codec, output) => {
 
     const ffmpeg_data = await ffmpeg.run(...command);
 
-    console.log(ffmpeg_data);
+    // console.log(ffmpeg_data);
     // await ffmpeg.run(
     //   "-f",
     //   "g722",

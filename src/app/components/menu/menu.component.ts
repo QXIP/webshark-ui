@@ -30,7 +30,7 @@ export class MenuComponent implements OnInit {
   async initMenu() {
     try {
       this.menuTreeIndex = [];
-      console.log('MENU:ngOnInit()')
+      // console.log('MENU:ngOnInit()')
       const {
         stats, nstat, convs,
         seqa, taps, eo,
@@ -98,7 +98,7 @@ export class MenuComponent implements OnInit {
         return menu;
       });
 
-      console.log('menu', { menuCollection, menuTree: this.menuTree });
+      // console.log('menu', { menuCollection, menuTree: this.menuTree });
       this.cdr.detectChanges();
     } catch (err) {
       this.menuTree = [];
@@ -108,6 +108,6 @@ export class MenuComponent implements OnInit {
   onSelected(event: any) {
     const menuItem = this.menuTreeIndex.find((i: any) => i.name === event.name);
     menuItem?.func();
-    console.log(event, this.menuTreeIndex.find((i: any) => i.name === event.name))
+    // console.log(event, this.menuTreeIndex.find((i: any) => i.name === event.name))
   }
 }

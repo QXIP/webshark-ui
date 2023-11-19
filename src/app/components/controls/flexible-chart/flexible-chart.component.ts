@@ -40,7 +40,7 @@ export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @Input() set typeOfChart(val: TypeOfChart) {
     this._typeOfChart = val;
-    console.log({ val });
+    // console.log({ val });
     this.redraw();
   }
   get typeOfChart(): TypeOfChart {

@@ -15,12 +15,12 @@ export class ChartAndTableComponent implements OnInit {
       return;
     }
 
-    console.log({ val });
+    // console.log({ val });
     const _data = val;
     const arrTitle: any[] = [];
     Object.entries(_data).forEach(([key, value]: any) => {
       if (Array.isArray(value)) {
-        console.log({ key, value });
+        // console.log({ key, value });
         this._data = value || [];
       } else {
         // this.title += `${value}`;
@@ -31,10 +31,10 @@ export class ChartAndTableComponent implements OnInit {
      * get data for chart
      */
     //
-    console.log('this._data', this._data);
+    // console.log('this._data', this._data);
     var o: any = {};
     this._data.forEach((i: any) => {
-      console.log(i)
+      // console.log(i)
       Object.entries(i).map(([key, val]) => {
         if (typeof val === 'number') {
           if (!o[key]) {

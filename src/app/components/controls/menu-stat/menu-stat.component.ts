@@ -27,7 +27,7 @@ export class MenuStatComponent implements OnInit {
   async initMenu() {
     try {
       this.menuTreeIndex = [];
-      console.log('MENU:ngOnInit()')
+      // console.log('MENU:ngOnInit()')
       const info = await this.webSharkDataService.getInfo();
       const {
         stats, nstat, convs,
