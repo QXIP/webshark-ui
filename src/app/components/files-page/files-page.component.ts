@@ -1,5 +1,6 @@
 import { WebSharkDataService } from '@app/services/web-shark-data.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter, Input } from '@angular/core';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-files-page',
@@ -10,7 +11,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Output, 
 })
 export class FilesPageComponent implements OnInit {
   files: any[] = [];
-
+  isKIOSK = !!environment.kiosk;
   @Input() isFile = false;
 
   @Output() fileChosen: EventEmitter<any> = new EventEmitter();
@@ -21,6 +22,7 @@ export class FilesPageComponent implements OnInit {
   }
 
   ngOnInit() {
+
     this.getFiles();
     this.webSharkDataService.updates.subscribe(({ cm }: { cm: string }) => {
       if (cm === 'uploaded') {

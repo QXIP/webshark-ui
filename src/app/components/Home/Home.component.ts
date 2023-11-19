@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit {
       ...files.filter((i: any) => i.children),
       ...files.filter((i: any) => !i.children)
     ];
-    console.log('FILES', this.files);
+    // console.log('FILES', this.files);
   }
   onClose(idx: number): void {
     this.dialogs = this.dialogs.filter((i, k) => k !== idx);
@@ -72,7 +72,7 @@ export class HomeComponent implements OnInit {
     if (!filename) {
       return;
     }
-    console.log('downloading file', filename);
+    // console.log('downloading file', filename);
     const href = encodeURIComponent('/' + filename);
     const url = `/webshark/json?method=download&capture=${href}&token=self`;
 
