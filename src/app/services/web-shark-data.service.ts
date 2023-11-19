@@ -28,9 +28,24 @@ export class WebSharkDataService {
   public updates: Observable<any>;
 
   constructor(private http: HttpClient) {
-    if (location.hash) {
-      this.setCaptureFile(decodeURIComponent(location.hash.slice(1)))
-    }
+    const getParam = decodeURIComponent(location.hash.slice(1))
+    setTimeout(() => {
+      if (getParam) {
+        this.getFiles().then(f => {
+          // hash
+          const fileObject = f.files.find((i: any) => hash(i.name) === getParam);
+          if (!fileObject) {
+            location.hash = '';
+            return;
+          }
+
+          const fileName = fileObject.name;
+          StaticData.captureFile = fileName;
+          location.hash = '#' + encodeURIComponent(hash(fileName));
+          this.behavior.next({});
+        })
+      }
+    }, 200);
     this.updates = this.behavior.asObservable();
   }
 
@@ -57,7 +72,7 @@ export class WebSharkDataService {
   }
   public setCaptureFile(fileName: string) {
     StaticData.captureFile = fileName;
-    location.hash = '#' + encodeURIComponent(fileName);
+    location.hash = '#' + hash(fileName);
     this.behavior.next({});
   }
 
@@ -105,7 +120,7 @@ export class WebSharkDataService {
     if (limit === 0) {
       return this.httpGet('frames', {});
     }
-    return this.httpGet('frames', {limit});
+    return this.httpGet('frames', { limit });
   }
 
   getFrameData(frameId: number): Promise<any> {
