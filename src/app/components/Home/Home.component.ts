@@ -1,6 +1,8 @@
 import { ModalResizableService } from './../controls/modal-resizable/modal-resizable.service';
 import { WebSharkDataService } from '@app/services/web-shark-data.service';
 import { Component, OnInit } from '@angular/core';
+import { environment } from '@environments/environment';
+
 
 declare const transcode: Function;
 @Component({
@@ -11,6 +13,7 @@ declare const transcode: Function;
 export class HomeComponent implements OnInit {
   typeOfChart: any = 'area';
   files: any;
+  isKIOSK = !!environment.kiosk;
   isFileOnLink: boolean = false;
   dialogs: any[] = [];
   framePosition: any = ['vertical', 'horizontal'];
