@@ -8,6 +8,12 @@ $primary: map.get($my-theme, primary);
     width: 100%;
     display: block;
   }
+  .player-card-data {
+    display: flex;
+    &>div{
+      padding: 0.5rem;
+    }
+  }
   .player-card {
     margin: 0.5rem;
     flex: 5;

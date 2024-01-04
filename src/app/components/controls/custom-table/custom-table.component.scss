@@ -2,8 +2,8 @@ $bgColor: rgba(black, 0.12);
 
 table.this-table {
   table-layout: fixed;
-  width: 100%;
-  max-width: 100%;
+  // width: 100%;
+  // max-width: 100%;
 
   & tr {
     transition: background-color 0.3s;
