@@ -1,13 +1,7 @@
 <div class="body-container">
   <mat-toolbar color="primary" style="min-height: auto">
     <mat-toolbar-row style="flex-wrap: wrap; height: auto">
-      <button
-        mat-icon-button
-        *ngIf="!isKIOSK"
-        (click)="files = true; drawer.toggle()"
-      >
-        <mat-icon>menu</mat-icon>
-      </button>
+
       <div style="padding-right: 1rem">WebShark</div>
       <!-- <app-menu></app-menu> -->
       <button
@@ -29,92 +23,97 @@
       <button mat-icon-button [matMenuTriggerFor]="menuSettings">
         <mat-icon>settings</mat-icon>
         <mat-menu #menuSettings="matMenu">
-          <div style="padding: 1rem; display: flex">
-            <mat-radio-group aria-label="Chart settings">
-              <mat-radio-button
-                color="primary"
-                (click)="typeOfChart = 'line'"
-                value="line"
-                >Line</mat-radio-button
+          <div>
+
+            <div style="padding: 1rem; display: flex">
+              <mat-radio-group aria-label="Chart settings">
+                <mat-radio-button
+                  color="primary"
+                  (click)="typeOfChart = 'line'"
+                  value="line"
+                  >Line</mat-radio-button
+                >
+                <mat-radio-button
+                  color="primary"
+                  (click)="typeOfChart = 'bar'"
+                  value="bar"
+                  >Bar</mat-radio-button
+                >
+                <mat-radio-button
+                  color="primary"
+                  (click)="typeOfChart = 'area'"
+                  value="area"
+                  checked
+                  >Area</mat-radio-button
+                >
+              </mat-radio-group>
+            </div>
+            <div
+              style="
+                padding: 0rem;
+                padding-bottom: 1rem;
+                width: 390px;
+                display: flex;
+                justify-content: space-around;
+              "
+            >
+              <button
+                mat-button
+                (click)="framePosition = ['vertical', 'horizontal']"
               >
-              <mat-radio-button
-                color="primary"
-                (click)="typeOfChart = 'bar'"
-                value="bar"
-                >Bar</mat-radio-button
+                <div style="width: 60px; height: 60px; padding-top: 5px">
+                  <mat-grid-list cols="2" rowHeight="25px">
+                    <mat-grid-tile
+                      [colspan]="2"
+                      class="grid-content"
+                    ></mat-grid-tile>
+                    <mat-grid-tile class="grid-content"></mat-grid-tile>
+                    <mat-grid-tile class="grid-content"></mat-grid-tile>
+                  </mat-grid-list>
+                </div>
+              </button>
+              <button
+                mat-button
+                (click)="framePosition = ['horizontal', 'vertical']"
               >
-              <mat-radio-button
-                color="primary"
-                (click)="typeOfChart = 'area'"
-                value="area"
-                checked
-                >Area</mat-radio-button
+                <div style="width: 60px; height: 60px; padding-top: 5px">
+                  <mat-grid-list cols="2" rowHeight="25px">
+                    <mat-grid-tile
+                      [rowspan]="2"
+                      class="grid-content"
+                    ></mat-grid-tile>
+                    <mat-grid-tile class="grid-content"></mat-grid-tile>
+                    <mat-grid-tile class="grid-content"></mat-grid-tile>
+                  </mat-grid-list>
+                </div>
+              </button>
+              <button
+                mat-button
+                (click)="framePosition = ['horizontal', 'horizontal']"
               >
-            </mat-radio-group>
+                <div style="width: 60px; height: 60px; padding-top: 5px">
+                  <mat-grid-list cols="3" rowHeight="50px">
+                    <mat-grid-tile class="grid-content"></mat-grid-tile>
+                    <mat-grid-tile class="grid-content"></mat-grid-tile>
+                    <mat-grid-tile class="grid-content"></mat-grid-tile>
+                  </mat-grid-list>
+                </div>
+              </button>
+              <button
+                mat-button
+                (click)="framePosition = ['vertical', 'vertical']"
+              >
+                <div style="width: 60px; height: 60px; padding-top: 5px">
+                  <mat-grid-list cols="1" rowHeight="16px">
+                    <mat-grid-tile class="grid-content"></mat-grid-tile>
+                    <mat-grid-tile class="grid-content"></mat-grid-tile>
+                    <mat-grid-tile class="grid-content"></mat-grid-tile>
+                  </mat-grid-list>
+                </div>
+              </button>
+            </div>
           </div>
-          <div
-            style="
-              padding: 0rem;
-              width: 390px;
-              display: flex;
-              justify-content: space-around;
-            "
-          >
-            <button
-              mat-button
-              (click)="framePosition = ['vertical', 'horizontal']"
-            >
-              <div style="width: 60px; height: 60px; padding-top: 5px">
-                <mat-grid-list cols="2" rowHeight="25px">
-                  <mat-grid-tile
-                    [colspan]="2"
-                    class="grid-content"
-                  ></mat-grid-tile>
-                  <mat-grid-tile class="grid-content"></mat-grid-tile>
-                  <mat-grid-tile class="grid-content"></mat-grid-tile>
-                </mat-grid-list>
-              </div>
-            </button>
-            <button
-              mat-button
-              (click)="framePosition = ['horizontal', 'vertical']"
-            >
-              <div style="width: 60px; height: 60px; padding-top: 5px">
-                <mat-grid-list cols="2" rowHeight="25px">
-                  <mat-grid-tile
-                    [rowspan]="2"
-                    class="grid-content"
-                  ></mat-grid-tile>
-                  <mat-grid-tile class="grid-content"></mat-grid-tile>
-                  <mat-grid-tile class="grid-content"></mat-grid-tile>
-                </mat-grid-list>
-              </div>
-            </button>
-            <button
-              mat-button
-              (click)="framePosition = ['horizontal', 'horizontal']"
-            >
-              <div style="width: 60px; height: 60px; padding-top: 5px">
-                <mat-grid-list cols="3" rowHeight="50px">
-                  <mat-grid-tile class="grid-content"></mat-grid-tile>
-                  <mat-grid-tile class="grid-content"></mat-grid-tile>
-                  <mat-grid-tile class="grid-content"></mat-grid-tile>
-                </mat-grid-list>
-              </div>
-            </button>
-            <button
-              mat-button
-              (click)="framePosition = ['vertical', 'vertical']"
-            >
-              <div style="width: 60px; height: 60px; padding-top: 5px">
-                <mat-grid-list cols="1" rowHeight="16px">
-                  <mat-grid-tile class="grid-content"></mat-grid-tile>
-                  <mat-grid-tile class="grid-content"></mat-grid-tile>
-                  <mat-grid-tile class="grid-content"></mat-grid-tile>
-                </mat-grid-list>
-              </div>
-            </button>
-          </div>
+
         </mat-menu>
       </button>
     </mat-toolbar-row>
