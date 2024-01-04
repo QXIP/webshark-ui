@@ -3,7 +3,7 @@ import { WebSharkDataService } from '@app/services/web-shark-data.service';
 import { Component, Input, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { hash } from '@app/helper/functions';
 import WaveSurfer from 'wavesurfer.js';
-
+import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
 
 declare const transcode: Function;
 const DATA_TYPE = 'application/octet-stream';
@@ -23,9 +23,11 @@ export class TapRtpStreamsComponent implements OnInit {
   players: any[] = [];
   optionsAudioContainer = {
     // waveColor: '#D2EDD4',
+    normalize: true,
     progressColor: 'green',
     responsive: true,
-    minPxPerSec: 1
+    minPxPerSec: 100,
+
   }
 
   @Input() set data(val: any) {
@@ -154,7 +156,18 @@ export class TapRtpStreamsComponent implements OnInit {
         // rec.mp3 = 'http://localhost:8003/assets/we__will_rock_you.mp3'
         const player = WaveSurfer.create({
           ...this.optionsAudioContainer,
-          ...{ container: '#' + (rec.id || 'audio-player') }
+          container: '#' + (rec.id || 'audio-player'),
+          plugins: [TimelinePlugin.create({
+            /** The duration of the timeline in seconds, defaults to wavesurfer's duration */
+            // duration: 1,
+            /** Interval between ticks in seconds */
+            timeInterval: 0.1,
+            /** Interval between numeric labels in seconds */
+            primaryLabelInterval: 1,
+            /** Interval between secondary numeric labels in seconds */
+            // secondaryLabelInterval: 8,
+          })]
+
         });
         if (rec.mp3) {
           // this.webSharkDataService.getBLOB(rec.mp3).subscribe((data: any) => {
@@ -179,8 +192,8 @@ export class TapRtpStreamsComponent implements OnInit {
           // }
           // });
         } else {
-            rec.noData = true;
-            this.cdr.detectChanges();
+          rec.noData = true;
+          this.cdr.detectChanges();
         }
         rec.player = player;
 
