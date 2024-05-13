@@ -25,13 +25,16 @@ export interface ChartData {
 })
 export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy {
   exampleData: ChartData[] = [];
+  @Input() globalMinMax: boolean = false
   mousePosition: any = {
     inside: false,
     mousedown: false,
     x: 0,
     y: 0
   };
+  @Input() fullToolTip = false;
   @Input() isRange = true;
+  @Input() startXAxisNumber = 0;
   @Input() options: any = {
     axisX: false,
     axisY: false
@@ -89,7 +92,7 @@ export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy 
     // const { layerX = 0, layerY = 0 }:any = {};
     const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = this.canvas.nativeElement;
     const dX = layerX - offsetLeft;
-    const dY =   layerX - offsetTop;
+    const dY = layerX - offsetTop;
 
     switch (event.type) {
       case 'mousemove':
@@ -152,10 +155,10 @@ export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy 
     const index = Math.ceil((this.mousePosition.x) / stepX);
     return index;
   }
-  tooltip(ctx: any, text: string) {
+  tooltip(ctx: any, text: string, index = 0) {
     const padding = 4;
     ctx.font = `14px monospace`;
-    const textElement = ctx.measureText(text);
+    const textElement = ctx.measureText(text.split('\n')[0]);
     const w = textElement.width;
     const x = Math.max(0, Math.min(
       ctx.canvas.clientWidth - w - padding * 2,
@@ -165,10 +168,13 @@ export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy 
 
     ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
     ctx.fillStyle = 'black';
-    this.drawText(ctx, text, {
-      x, y,
-      bgColor: 'rgba(255, 255, 255, 0.8)',
-      color: 'black'
+    text.split('\n').forEach((line, k) => {
+
+      this.drawText(ctx, line, {
+        x, y: y + k * 20,
+        bgColor: 'rgba(255, 255, 255, 0.8)',
+        color: 'black'
+      })
     })
 
   }
@@ -206,18 +212,38 @@ export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy 
     ctx.lineWidth = 1;
   }
   draw(ctx: any) {
+
+    let minData = Number.MAX_VALUE, maxData = Number.MIN_VALUE;
+    if (this.globalMinMax) {
+      this.exampleData.forEach(({ data }: any) => {
+        minData = Math.min(...data, minData, 0);
+        maxData = Math.max(...data, maxData);
+      });
+    }
     this.exampleData.forEach(({ data, color, typeOfChart }: any) => {
-      this.drawChart(ctx, data, color, typeOfChart);
+      this.drawChart(ctx, data, color, typeOfChart, [minData, maxData]);
     })
     if (this.isRange) {
       this.drawRange(ctx);
 
       if (this.mousePosition.inside) {
         this.drawTarget(ctx);
-        this.tooltip(ctx, JSON.stringify(
-          !this.mousePosition.mousedown ?
-            this.getIndexOfData() :
-            this.сalcRangeByData()));
+        if (this.fullToolTip) {
+
+          const idx = this.getIndexOfData() - 1;
+          console.log({ exampleData: this.exampleData });
+          this.tooltip(ctx,
+
+            this.exampleData.map(i => i.data[idx] ? `${i.name}: ${i.data[idx]}` : '').filter(i => !!i).join('\n')
+
+          )
+        } else {
+
+          this.tooltip(ctx, JSON.stringify(
+            !this.mousePosition.mousedown ?
+              this.getIndexOfData() :
+              this.сalcRangeByData()));
+        }
       }
     }
 
@@ -282,7 +308,7 @@ export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy 
       ctx.moveTo(x, y - 5);
       ctx.lineTo(x, y + 3);
       ctx.stroke();
-      this.drawText(ctx, `${(data.length * (i + 1) / L).toFixed(0)}`, {
+      this.drawText(ctx, `${(this.startXAxisNumber + data.length * (i + 1) / L).toFixed(0)}`, {
         x: x - 10,
         y: y,
         bgColor: 'rgba(255, 255, 255, 0)',
@@ -307,11 +333,21 @@ export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy 
       ctx.stroke();
     }
   }
-  drawChart(ctx: any, data: any[], color = 'rgba(0,255,255,0.5)', type: TypeOfChart = this.typeOfChart) {
+  drawChart(ctx: any, data: any[], color = 'rgba(0,255,255,0.5)', type: TypeOfChart = this.typeOfChart, [min, max]: any) {
     data = Functions.cloneObject(data);
     const pudding = { x: 10, y: this.options.axisX ? 40 : 0 }; // px
-    const minY = Math.min(...data, 0);
-    const maxY = Math.max(...data);
+    let minY;
+    let maxY;
+    if (this.globalMinMax) {
+      minY = min;
+      maxY = max;
+
+    } else {
+
+      minY = Math.min(...data, 0);
+      maxY = Math.max(...data);
+    }
+
     let stepX = ((ctx.canvas.offsetWidth - pudding.x * 2) / (data.length));
     const stepY = ((ctx.canvas.offsetHeight - pudding.y * 2) / maxY);
 
@@ -380,7 +416,7 @@ export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy 
     const c = this.canvas.nativeElement;
 
     c.width = `${c.offsetWidth}`;
-    c.height = `${c.offsetHeight}`;
+    c.height = `${c.offsetHeight - 5}`;
 
     if (c.getContext) {
       var ctx = c.getContext('2d');

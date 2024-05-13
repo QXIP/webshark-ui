@@ -17,7 +17,7 @@
       class="this-table"
     >
       <ng-container
-        *ngFor="let item of columns; let i = index"
+        *ngFor="let item of columnsValue; let i = index"
         [matColumnDef]="item"
       >
         <ng-container>
@@ -37,16 +37,16 @@
             </div>
           </th>
           <td *matCellDef="let element">
-            {{ element[item] }}
+            {{ element[getKeyBy(item)] }}
           </td>
         </ng-container>
       </ng-container>
 
       <tbody>
-        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-header-row *matHeaderRowDef="columnsValue"></tr>
         <tr
           mat-row
-          *matRowDef="let row; index as i; columns: columns"
+          *matRowDef="let row; index as i; columns: columnsValue"
           [style.background-color]="
             getSelected(i) ? '#3f51b5' : row.bg && '#' + row.bg
           "

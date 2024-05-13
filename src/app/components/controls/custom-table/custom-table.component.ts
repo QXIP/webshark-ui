@@ -12,9 +12,18 @@ import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomTableComponent {
-  @Input() columns: any[] = [];
+  @Input() columns: any = [];
+  @Input() isDictionary: boolean = false;
   @Input() columnsFilter: any[] = [];
   @Input() isSelectedByClick: boolean = false;
+
+  get columnsValue(): any {
+    return this.isDictionary ?
+      Object.values(this.columns) : this.columns;
+  }
+  getKeyBy(value: any): any {
+    return this.isDictionary ? Object.entries(this.columns).find(([key, val]) => val === value)?.[0] : value;
+  }
   selectedRowIndex: number = -1; // -1 is selected nothings
 
   @Output() rowClick: EventEmitter<any> = new EventEmitter();

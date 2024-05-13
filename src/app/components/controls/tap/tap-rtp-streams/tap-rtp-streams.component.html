@@ -1,16 +1,38 @@
 <isData class="is-data-wrapper" [noDataIf]="streams.length === 0">
-  <as-split *ngIf="isReady" direction="vertical" [gutterSize]="5">
-    <as-split-area [size]="20">
-      <app-custom-table
-        [details]="streams"
-        [columns]="columns"
-        [isPaginator]="false"
-        [isSelectedByClick]="true"
-        (rowClick)="rowClick($event)"
-        #recordTable
-      ></app-custom-table>
-    </as-split-area>
-    <as-split-area [size]="80">
+  <div
+    *ngIf="isReady"
+    style="height: calc(100% - 4rem); min-height: 200px; width: 100%"
+  >
+    <div
+      *ngFor="let item of streams; let odd = odd; let idx = index"
+      class="table-row-wrapper"
+      (click)="rowClick({ row: item })"
+    >
+      <div class="table-row" style="background: transparent">
+        <mat-checkbox
+          color="primary"
+          [(ngModel)]="item.__selected"
+          (click)="$event.stopPropagation()"
+
+        ></mat-checkbox>
+      </div>
+      <div *ngFor="let col of getKeys(item); let idx = index" class="table-row">
+        <!-- [style.flex]="false && idx === 3 ? 3 : 1" -->
+        <h3>{{ col }}:</h3>
+        <span style="float: right">{{ item[col] }}</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngFor="let rec of players; let idx = index">
+    <stream-detail
+      [data]="{ streams: streams }"
+      [rec]="rec"
+      (close)="onClosePlayer(idx)"
+    ></stream-detail>
+  </ng-container>
+  <!-- </as-split-area> -->
+  <!-- <as-split-area [size]="80">
       <div style="
         display: flex;
         margin-bottom: 3rem;
@@ -108,7 +130,7 @@
         </cdk-virtual-scroll-viewport>
       </mat-card>
     </as-split-area>
-  </as-split>
+  </as-split> -->
   <ul *ngIf="!isReady" style="position: absolute">
     <li *ngFor="let item of progressMessage">
       {{ item }}

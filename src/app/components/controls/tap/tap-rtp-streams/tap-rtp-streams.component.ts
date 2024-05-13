@@ -51,6 +51,9 @@ export class TapRtpStreamsComponent implements OnInit {
   get captureFile() {
     return this.webSharkDataService.getCapture();
   }
+  getKeys(obj: any) {
+    return Object.keys(obj).filter(i => i !== '__selected');
+  }
   async getFileArrayOfUint8Array(filename: string) {
     const href = encodeURIComponent('/' + filename);
     const url = `/webshark/json?method=download&capture=${href}&token=self`;
@@ -75,13 +78,13 @@ export class TapRtpStreamsComponent implements OnInit {
     return new Blob(collectArrayData, { type: DATA_TYPE });
 
   }
-  blobSaveAsFile(blobUrl: string, filename: string) {
-    var link = document.createElement("a"); // Or maybe get it from the current document
-    link.href = blobUrl;
-    link.download = filename;
-    link.innerHTML = "Click here to download the file";
-    document.body.appendChild(link);
-  }
+  // blobSaveAsFile(blobUrl: string, filename: string) {
+  //   var link = document.createElement("a"); // Or maybe get it from the current document
+  //   link.href = blobUrl;
+  //   link.download = filename;
+  //   link.innerHTML = "Click here to download the file";
+  //   document.body.appendChild(link);
+  // }
   /**
    * parse PCAP to rtp-strems binnary data
    *  FFMPEG
@@ -142,7 +145,7 @@ export class TapRtpStreamsComponent implements OnInit {
       // console.log(blobUrl)
 
       out.push({ ssrc: item.ssrc, blobUrl });
-      this.blobSaveAsFile(blobUrl, `audio-${item.ssrc}.mp3`);
+      // this.blobSaveAsFile(blobUrl, `audio-${item.ssrc}.mp3`);
     }
 
     return out;
@@ -153,7 +156,6 @@ export class TapRtpStreamsComponent implements OnInit {
      */
     if (!rec.player) {
       try {
-        // rec.mp3 = 'http://localhost:8003/assets/we__will_rock_you.mp3'
         const player = WaveSurfer.create({
           ...this.optionsAudioContainer,
           container: '#' + (rec.id || 'audio-player'),
@@ -217,8 +219,15 @@ export class TapRtpStreamsComponent implements OnInit {
     })
 
   }
+  onClosePlayer(idx: any) {
+    // console.log({idx})
+    this.players = this.players.filter((i, k) => k !== idx);
+    this.cdr.detectChanges();
+  }
   async rowClick({ row }: any) {
-    // console.log({ row });
+    // this.streams
+    console.log(this.streams, { row });
+
     const id = `player-${hash(JSON.stringify(row))}`;
     let playerElement = this.players.find(p => p.id === id);
     if (!playerElement) {
@@ -233,10 +242,7 @@ export class TapRtpStreamsComponent implements OnInit {
         rowData,
       };
 
-
-
-
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         playerElement = this.getPlayer(playerElement);
         this.cdr.detectChanges();
       });
