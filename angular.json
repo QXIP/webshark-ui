@@ -28,7 +28,8 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/ffmpeg"
+              "src/ffmpeg",
+              "src/wiregasm-lib"
 
             ],
             "styles": [
@@ -38,8 +39,11 @@
             "scripts": [
               "src/enable-threads.js",
               "src/ffmpeg/ffmpeg.min.js",
-              "src/ffmpeg-init.js"
-            ]
+              "src/ffmpeg-init.js",
+              "src/wiregasm-lib/wiregasm.js",
+              "src/wiregasm-lib/pako.js"
+            ],
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "production": {
@@ -123,10 +127,14 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "webWorkerTsConfig": "tsconfig.worker.json"
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "62c37ccd-5abf-43c9-b55d-6eac0b7d97f7"
   }
 }

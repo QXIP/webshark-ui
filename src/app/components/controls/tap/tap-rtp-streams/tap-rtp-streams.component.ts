@@ -4,6 +4,7 @@ import { Component, Input, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } 
 import { hash } from '@app/helper/functions';
 import WaveSurfer from 'wavesurfer.js';
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
+import { WiregasmService } from '@app/services/wiregasm.service';
 
 declare const transcode: Function;
 const DATA_TYPE = 'application/octet-stream';
@@ -44,7 +45,7 @@ export class TapRtpStreamsComponent implements OnInit {
   audioStreamsBlobURL: any[] = [];
 
   constructor(
-    private webSharkDataService: WebSharkDataService,
+    private webSharkDataService: WiregasmService,
     private cdr: ChangeDetectorRef
   ) { }
 

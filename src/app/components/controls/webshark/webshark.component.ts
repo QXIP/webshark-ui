@@ -15,6 +15,7 @@ import { HighlightService } from '@app/services/hightlight.service';
 import { AlertService } from '../alert/alert.service';
 import { CustomTableComponent } from '../custom-table/custom-table.component';
 import { environment } from './../../../../environments/environment';
+import { WiregasmService } from '@app/services/wiregasm.service';
 
 @Component({
   selector: 'app-webshark',
@@ -60,7 +61,7 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
   @ViewChild('dataGridTable', { static: false }) dataGrid: any;
 
   constructor(
-    private webSharkDataService: WebSharkDataService,
+    private webSharkDataService: WiregasmService,
     private highlightService: HighlightService,
     private cdr: ChangeDetectorRef,
     private alertService: AlertService
@@ -83,23 +84,25 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
   }
 
   private async initData() {
-    try {
-      const data = await this.webSharkDataService.getFrames(0);
-      this.destDetailsTable = data.map((frame: any) => {
-        const [id, time, source, description, protocol, length, info] = frame.c;
-        const { bg, fg } = frame;
-        return { id, time, source, description, protocol, length, info, bg, fg };
-      });
-      this.detailsTable = this.destDetailsTable;
-      this.ready.emit([{
-        color: 'rgba(255,255,255, 0.8)',
-        data: this.destDetailsTable.map((i: any) => i.length * 1)
-      }]);
-      this.cdr.detectChanges();
-      this.setDefaultSelection();
-    } catch (error) {
-      return;
-    }
+    // try {
+    const data = await this.webSharkDataService.getFrames(0);
+    console.log('initData()', { data })
+    this.destDetailsTable = data.map((frame: any) => {
+      const [id, time, source, description, protocol, length, info] = frame.colData;
+      const { bg, fg } = frame;
+      return { id, time, source, description, protocol, length, info, bg, fg };
+    });
+    this.detailsTable = this.destDetailsTable;
+    this.ready.emit([{
+      color: 'rgba(255,255,255, 0.8)',
+      data: this.destDetailsTable.map((i: any) => i.length * 1)
+    }]);
+    this.cdr.detectChanges();
+    this.setDefaultSelection();
+    // } catch (error) {
+    //   console.log({error})
+    //   return;
+    // }
 
     this.initFrameData(1);
     this.cdr.detectChanges();
@@ -115,10 +118,12 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
   }
   private async initFrameData(frameId: number) {
     const frameData: any = await this.webSharkDataService.getFrameData(frameId);
-    // console.log({ frameData })
-    this.frameHexDataBase64 = frameData.bytes;
+    console.log({ frameData })
+    // this.frameHexDataBase64 = frameData.bytes;
+    this.frameHexDataBase64 = frameData.data_sources[0].data;
     this.dataIndex = [];
-    const convert: Function = ({ l: name, f: description, h: highlight, n }: any) => {
+    const convert: Function = ({ label: name, filter: description, tree: n, length, start }: any) => {
+      const highlight = [start, length]
       const out = {
         name, description, highlight,
         children: n?.map((item: any) => convert(item))

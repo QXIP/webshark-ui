@@ -1,5 +1,6 @@
 import { WebSharkDataService } from '@app/services/web-shark-data.service';
 import { Component, Input } from '@angular/core';
+import { WiregasmService } from '@app/services/wiregasm.service';
 @Component({
   selector: 'tap-page',
   templateUrl: './tap-page.component.html',
@@ -16,7 +17,7 @@ export class TapPageComponent {
     this.initData(link);
   }
   constructor(
-    private webSharkDataService: WebSharkDataService
+    private webSharkDataService: WiregasmService
   ) { }
 
   async initData(link: string) {

@@ -4,6 +4,7 @@ import { hash } from '@app/helper/functions';
 import WaveSurfer from 'wavesurfer.js';
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
 import { TypeOfChart } from '@app/components/controls/flexible-chart/flexible-chart.component';
+import { WiregasmService } from '@app/services/wiregasm.service';
 
 declare const transcode: Function;
 const DATA_TYPE = 'application/octet-stream';
@@ -79,7 +80,7 @@ export class StreamDetailComponent implements OnInit {
   }))
   columnsDictionary: any = Object.values(this.columnDictionary);
   constructor(
-    private webSharkDataService: WebSharkDataService,
+    private webSharkDataService: WiregasmService,
     private cdr: ChangeDetectorRef
   ) { }
   get titleId() {

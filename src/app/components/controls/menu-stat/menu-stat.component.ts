@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { WebSharkDataService } from '@app/services/web-shark-data.service';
 import { ModalResizableService } from '../modal-resizable/modal-resizable.service';
+import { WiregasmService } from '@app/services/wiregasm.service';
 
 @Component({
   selector: 'app-menu-stat',
@@ -11,7 +12,7 @@ export class MenuStatComponent implements OnInit {
   menuTreeIndex: any;
   menuTree: any;
   constructor(
-    private webSharkDataService: WebSharkDataService,
+    private webSharkDataService: WiregasmService,
     private modalResizableService: ModalResizableService,
     private cdr: ChangeDetectorRef
   ) { }
@@ -30,9 +31,9 @@ export class MenuStatComponent implements OnInit {
       // console.log('MENU:ngOnInit()')
       const info = await this.webSharkDataService.getInfo();
       const {
-        stats, nstat, convs,
-        seqa, taps, eo,
-        srt, rtd
+        stats = [], nstat = [], convs = [],
+        seqa = [], taps = [], eo = [],
+        srt = [], rtd = []
       } = info;
 
       const menuCollection = [
