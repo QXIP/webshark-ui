@@ -19,7 +19,7 @@ export class PcapUploaderComponent implements OnInit, OnDestroy, AfterViewInit {
   fileToUpload: any;
   inProgress = false;
   isDataTimeNow: any = false;
-
+  @Input() autoUpload = false;
   @Output() changeSettings = new EventEmitter<any>();
 
   @ViewChild('fileSelect', { static: true }) fileSelect: any;
@@ -54,7 +54,12 @@ export class PcapUploaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filename = file.name;
     this.filesize = (file.size / 1024).toFixed(2);
     this.fileToUpload = file;
-
+    if (this.autoUpload) {
+      requestAnimationFrame(() => {
+        this.cdr.detectChanges();
+        this.onSubmit();
+      })
+    }
     this.cdr.detectChanges();
   }
   onSubmit() {

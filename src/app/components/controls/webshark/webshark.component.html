@@ -2,11 +2,11 @@
   <div style="padding: 2rem">
     <div
       style="min-width: 200px; margin-bottom: 1rem"
-      [style.height]="isKIOSK ? '60vh' : '100px'"
+      [style.height]="true || isKIOSK ? '60vh' : '100px'"
     >
-      <pcap-uploader></pcap-uploader>
+      <pcap-uploader [autoUpload]="true"></pcap-uploader>
     </div>
-    <mat-list *ngIf="!isKIOSK">
+    <mat-list *ngIf="false && !isKIOSK">
       <h1 mat-subheader>Files</h1>
       <div
         *ngFor="let note of fileList"
