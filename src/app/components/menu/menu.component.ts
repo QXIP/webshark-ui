@@ -40,11 +40,11 @@ export class MenuComponent implements OnInit {
       } = await this.webSharkDataService.getInfo();
 
       const menuCollection = [
-        { name: 'Endpoints', children: [...convs] },
-        { name: 'Response Time', children: [...srt, ...rtd] },
-        { name: 'Statistics', children: [...stats, ...nstat] },
-        { name: 'Export Objects', children: [...eo] },
-        { name: 'Misc', children: [...taps, ...seqa] }
+        // { name: 'Endpoints', children: [...convs] },
+        // { name: 'Response Time', children: [...srt, ...rtd] },
+        // { name: 'Statistics', children: [...stats, ...nstat] },
+        // { name: 'Export Objects', children: [...eo] },
+        { name: 'menu', children: [...taps, ...seqa] }
       ];
 
       this.menuTree = menuCollection.map(menu => {

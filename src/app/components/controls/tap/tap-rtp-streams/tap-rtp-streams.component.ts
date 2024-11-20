@@ -93,7 +93,8 @@ export class TapRtpStreamsComponent implements OnInit {
   async ffmpegDecoder() {
     this.progressMessage.push(`Reading data from ${this.captureFile} file`);
     this.cdr.detectChanges();
-    const blobData: Blob = await this.getFileArrayOfUint8Array(this.captureFile);
+    const blobData: Blob = await this.webSharkDataService.blobFile;
+    // const blobData: Blob = await this.getFileArrayOfUint8Array(this.captureFile);
     // console.log(this.captureFile, { blobData });
     // const blobUrl = await transcode(blobData);
     // console.log(blobUrl)
@@ -102,30 +103,56 @@ export class TapRtpStreamsComponent implements OnInit {
     this.cdr.detectChanges();
 
     const index = await this.webSharkDataService.getFrames(0);
+    console.log({ index })
     let offset = 24;
     const arrOffset = index.map((i: any, k: number, arr: any[]) => {
       if (k > 0) {
-        offset += +arr[k - 1].c[5];
+        offset += +arr[k - 1].colData[5];
       }
       offset += 16;
-      return [offset, ...i.c, blobData.slice(offset, offset + +i.c[5], DATA_TYPE)];
+      return [offset, ...i.colData, blobData.slice(offset, offset + +i.colData[5], DATA_TYPE)];
     })
     // console.log(arrOffset);
     this.progressMessage.push('Collect payload binary to streams')
     this.cdr.detectChanges();
     // rtp-streams
-    const { taps: [{ streams: rtpStreams }] } = await this.webSharkDataService.getTapJson('rtp-streams');
-    // console.log(rtpStreams);
 
-    const arr = rtpStreams.map((streamData: any) => {
+    const rtpStreams: any = [];
+    const _collect: any = {};
+    index.filter((item: any) => {
+      const info: string = item.colData[6];
+      return !!info.match(/SSRC=/g);
+    }).forEach((item: any) => {
+      const info: string = item.colData[6];
+      const outData: any = {};
+      info.split(/\,\s/g).forEach(i => {
+        const [key, val]: any = i.split('=');
+        if (key === 'SSRC') {
+          _collect[val] = true;
+        }
+        outData[key] = val;
+      })
+      rtpStreams.push(outData);
+    });
+    // const { taps: [{ streams: rtpStreams }] } = await this.webSharkDataService.getTapJson('rtp-streams');
+    const arrSSRC = Object.keys(_collect);
+    console.log({ _collect, rtpStreams });
+
+    this.streams = arrSSRC.map(i => {
+      return { ssrc: i }
+    });
+
+    // return [];
+    const arr = arrSSRC.map((streamData: string) => {
       return {
-        ssrc: streamData.ssrc,
-        data: streamData,
+        ssrc: streamData,
+        data: { SSRC: streamData } as any,
         blob: new Blob(arrOffset
-          .filter((frame: any) => frame[7].toUpperCase().includes(`SSRC=${streamData.ssrc.toUpperCase()}`))
+          .filter((frame: any) => frame[7].toUpperCase().includes(`SSRC=${streamData.toUpperCase()}`))
           .map((i: any) => (i[8] as Blob).slice(54)), { type: DATA_TYPE })
       };
     })
+    // debugger;
     // console.log({ arr })
     const codecDictionary: any = {
       'g711a': 'alaw',
@@ -136,7 +163,7 @@ export class TapRtpStreamsComponent implements OnInit {
     for (let item of arr) {
       // console.log('<>>>>', item.data);
 
-      const codec = codecDictionary[(item.data.payload + '').toLowerCase()] || 'g722';
+      const codec = codecDictionary[(item.data?.payload + '').toLowerCase()] || 'g722';
       // console.log('<>>>>', {codec});
 
       // const i = arr[0];
@@ -148,7 +175,7 @@ export class TapRtpStreamsComponent implements OnInit {
       out.push({ ssrc: item.ssrc, blobUrl });
       // this.blobSaveAsFile(blobUrl, `audio-${item.ssrc}.mp3`);
     }
-
+    console.log({ out })
     return out;
   }
   getPlayer(rec: any) {
@@ -232,15 +259,15 @@ export class TapRtpStreamsComponent implements OnInit {
     const id = `player-${hash(JSON.stringify(row))}`;
     let playerElement = this.players.find(p => p.id === id);
     if (!playerElement) {
-      const rowData = await this.webSharkDataService.getRTPStreamTap(row);
+      // const rowData = await this.webSharkDataService.getRTPStreamTap(row);
       // const mp3link = this.webSharkDataService.getMp3LinkByRowData(row);
-      const { taps: [{ ssrc }] } = rowData;
+      // const { taps: [{ ssrc }] } = rowData;
       // console.log(this.audioStreamsBlobURL, { rowData })
 
       playerElement = {
         id,
-        mp3: this.audioStreamsBlobURL.find(i => i.ssrc.toUpperCase() === ssrc.toUpperCase())?.blobUrl,
-        rowData,
+        mp3: this.audioStreamsBlobURL.find(i => i.ssrc.toUpperCase() === row.ssrc.toUpperCase())?.blobUrl,
+        rowData: {ssrc: row.ssrc} as any,
       };
 
       requestAnimationFrame(() => {

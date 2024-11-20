@@ -20,8 +20,8 @@ export class MenuStatComponent implements OnInit {
   async ngOnInit() {
     const d = await this.initMenu();
   }
-  public onMenuClick(link: string, name: string) {
-    this.modalResizableService.open({ link, name });
+  public onMenuClick(link: any) {
+    this.modalResizableService.open({ link });
     this.cdr.detectChanges();
   }
 
@@ -41,7 +41,11 @@ export class MenuStatComponent implements OnInit {
         { name: 'Response Time', children: [...srt, ...rtd] },
         { name: 'Statistics', children: [...stats, ...nstat] },
         { name: 'Export Objects', children: [...eo] },
-        { name: 'Misc', children: [...taps, ...seqa] }
+        { name: 'Misc', children: [{
+          name: 'RTP Rteams',
+          type: 'rtp-streams',
+          jsonData: {}
+        }] }
       ];
       this.menuTree = menuCollection;
 

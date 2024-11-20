@@ -1,4 +1,6 @@
-<isData class="is-data-wrapper" [noDataIf]="streams.length === 0">
+{{ streams | json }}
+
+<isData class="is-data-wrapper" [noDataIf]="false && streams.length === 0">
   <div
     *ngIf="isReady"
     style="height: calc(100% - 4rem); min-height: 200px; width: 100%"

@@ -26,6 +26,8 @@ export class WiregasmService {
   private behavior = new BehaviorSubject({})
   public updates: BehaviorSubject<any> = new BehaviorSubject({});
 
+  public blobFile: Blob = new Blob([]);
+
   constructor() {
     if (typeof Worker !== 'undefined') {
       this.worker = new Worker(new URL('./../wiregasm.worker', import.meta.url));
@@ -159,7 +161,7 @@ export class WiregasmService {
     return new Promise((reason, reject) => {
       this.worker.postMessage({ type: "getFrame", frameId })
       this.worker.onmessage = (data: any) => {
-        console.log('getFrameData', {data})
+        console.log('getFrameData', { data })
         reason(data.data.data.frame1);
       }
     })
@@ -218,6 +220,19 @@ export class WiregasmService {
   }
   postFile(fileToUpload: File, isDataTimeNow: any): Observable<any> {
     console.warn('postFile', fileToUpload)
+
+    const reader = new FileReader();
+    reader.onload =  (e: any) => {
+      const arrayBuffer: any = e.target.result;
+      // Создаем Blob из ArrayBuffer
+      const blob = new Blob([arrayBuffer], { type: fileToUpload.type });
+      // Теперь переменная blob содержит бинарные данные файла
+      this.blobFile = blob;
+
+    };
+    reader.readAsArrayBuffer(fileToUpload);
+
+
     return new Observable((observe) => {
       // worker.postMessage({ type: "process", file: file });
       this.worker.postMessage({ type: "process", file: fileToUpload })
