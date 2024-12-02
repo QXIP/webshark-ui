@@ -200,27 +200,15 @@ export class TapRtpStreamsComponent implements OnInit {
 
         });
         if (rec.mp3) {
-          // this.webSharkDataService.getBLOB(rec.mp3).subscribe((data: any) => {
-          // const data = {}
-          // console.log({ data })
-          // if (!data || data.size === 0) {
-          //   rec.noData = true;
-          //   this.cdr.detectChanges();
-          // } else {
+
           player.load(rec.mp3);
           player.on('ready', () => {
             player.zoom(1);
             player.on('audioprocess', (event: any) => {
-              /**
-               * needs to sync the playback with table stream data
-               */
-              // console.log(event);
               this.cdr.detectChanges();
             });
             this.cdr.detectChanges();
           });
-          // }
-          // });
         } else {
           rec.noData = true;
           this.cdr.detectChanges();
@@ -259,10 +247,6 @@ export class TapRtpStreamsComponent implements OnInit {
     const id = `player-${hash(JSON.stringify(row))}`;
     let playerElement = this.players.find(p => p.id === id);
     if (!playerElement) {
-      // const rowData = await this.webSharkDataService.getRTPStreamTap(row);
-      // const mp3link = this.webSharkDataService.getMp3LinkByRowData(row);
-      // const { taps: [{ ssrc }] } = rowData;
-      // console.log(this.audioStreamsBlobURL, { rowData })
 
       playerElement = {
         id,

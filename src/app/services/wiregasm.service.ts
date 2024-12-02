@@ -20,8 +20,10 @@ export class WiregasmService {
   _frame1: any;
 
 
-  private url = ''//`${environment.apiUrl}json`;
-  private urlUpload = ''//`${environment.apiUrl}upload`;
+  // private url = ''//`${environment.apiUrl}json`;
+  // private urlUpload = ''//`${environment.apiUrl}upload`;
+
+  isParsingProcess = false;
 
   private behavior = new BehaviorSubject({})
   public updates: BehaviorSubject<any> = new BehaviorSubject({});
@@ -35,6 +37,10 @@ export class WiregasmService {
         if (typeof data === 'object' && data?.type === 'processed') {
           this._Frames = data.data.table;
           this._frame1 = data.data.frame1;
+
+          const allFrames = await this.getAllFrameData();
+          console.log('done parse all frames===>', allFrames);
+          console.log('this.allFrameDataArray', this.allFrameDataArray);
 
           this.updates.next(data);
         }
@@ -50,19 +56,7 @@ export class WiregasmService {
   }
 
 
-  // private params(method: string, paramObj: any): string {
-  //   const param: any = Object.assign({
-  //     method,
-  //     capture: this.getCapture()
-  //   }, paramObj);
-  //   if (StaticData.filter && method != 'frame') {
-  //     param.filter = StaticData.filter;
-  //   }
-  //   return Object.entries(param).map(
-  //     ([key, value]: any[]) =>
-  //       `${key}=${encodeURIComponent(value)}`
-  //   ).join('&');
-  // }
+
   public setFilter(filter: string) {
     console.warn('setFilter', filter)
     // 'filter='+encodeURIComponent(`sip.Via.received == "195.138.93.233"`)
@@ -84,27 +78,7 @@ export class WiregasmService {
     console.warn('getCapture', StaticData.captureFile)
     return StaticData.captureFile;
   }
-  // private getBufferGate<T>(url: string): Observable<any> {
-  //   const bufferIndex = hash(url);
-  //   if (BufferData.data[bufferIndex]) {
-  //     return new Observable(observer => {
-  //       observer.next(BufferData.data[bufferIndex]);
-  //       observer.complete();
-  //     });
-  //   }
-  //   return this.http.get<T>(url).pipe(map(data => {
-  //     BufferData.data[bufferIndex] = data;
-  //     return data;
-  //   }));
-  // }
-  getBLOB(url: string): Observable<any> {
-    console.warn('getBLOB', url)
-    return new Observable((observe) => {
-      observe.next({});
-      observe.complete();
-    })
-    // return this.http.get(url, { responseType: 'blob' });
-  }
+
   private httpGet(command: string, params: any = null): Promise<any> {
     console.warn('httpGet', command, params)
     return new Promise((reason, reject) => {
@@ -154,41 +128,46 @@ export class WiregasmService {
     // }
     // return this.httpGet('frames', { limit });
   }
+  allFrameDataArray: any[] = [];
 
+  async getAllFrameData(n = 1): Promise<any> {
+    const out = (await this.getFrameData(n));
+    // console.log({out})
+    this.allFrameDataArray.push(out);
+    // console.log('frames => ', this._Frames);
+    this.bs.next({
+      isParsing: true,
+      parsingProgress: n / +this._Frames.length * 100
+    });
+    if (n < +this._Frames.length) {
+      return await this.getAllFrameData(n + 1);
+    } else {
+      return this.allFrameDataArray;
+    }
+  }
   getFrameData(frameId: number): Promise<any> {
-    console.warn('getFrameData', frameId)
+    // console.warn('getFrameData', frameId)
     // this._frame1
+
     return new Promise((reason, reject) => {
-      this.worker.postMessage({ type: "getFrame", frameId })
+      if(this.allFrameDataArray[frameId]) {
+        console.log('frame exist', frameId, this.allFrameDataArray[frameId])
+        reason(this.allFrameDataArray[frameId])
+
+        return;
+      }
       this.worker.onmessage = (data: any) => {
-        console.log('getFrameData', { data })
+        // console.log('getFrameData', { data: data.data.data.frame1 })
         reason(data.data.data.frame1);
       }
+      this.worker.postMessage({ type: "getFrame", frameId })
     })
-    // const params: any = {
-    //   bytes: 'yes',
-    //   proto: 'yes',
-    //   frame: frameId
-    // }
-    // if (frameId - 1) {
-    //   params.prev_frame = frameId - 1;
-    // }
-    // return this.httpGet('frame', params);
+
 
   }
   getTapJson(tapID: string): Promise<any> {
     console.warn('getTapJson', tapID)
     return this.httpGet('tap', { tap0: tapID })
-  }
-  getMp3LinkByRowData(rtpData: any): string {
-    console.warn('getMp3LinkByRowData', rtpData)
-    // const { saddr, sport, daddr, dport, ssrc } = rtpData;
-    // const token = 'rtp:' + [
-    //   saddr, sport, daddr, dport,
-    //   ssrc.toString(16)
-    // ].join('_');
-    // const strParams = this.params('download', { token });
-    return ''//`${this.url}?${strParams}`
   }
   getRTPStreamTap(rtpData: any): Promise<any> {
     console.warn('getRTPStreamTap', rtpData)
@@ -222,7 +201,7 @@ export class WiregasmService {
     console.warn('postFile', fileToUpload)
 
     const reader = new FileReader();
-    reader.onload =  (e: any) => {
+    reader.onload = (e: any) => {
       const arrayBuffer: any = e.target.result;
       // Создаем Blob из ArrayBuffer
       const blob = new Blob([arrayBuffer], { type: fileToUpload.type });
@@ -235,7 +214,7 @@ export class WiregasmService {
 
     return new Observable((observe) => {
       // worker.postMessage({ type: "process", file: file });
-      this.worker.postMessage({ type: "process", file: fileToUpload })
+      this.worker.postMessage({ type: "process", file: fileToUpload });
       observe.next({});
       observe.complete();
     })

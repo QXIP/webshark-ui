@@ -120,21 +120,24 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
     const frameData: any = await this.webSharkDataService.getFrameData(frameId);
     console.log({ frameData })
     // this.frameHexDataBase64 = frameData.bytes;
-    this.frameHexDataBase64 = frameData.data_sources[0].data;
-    this.dataIndex = [];
-    const convert: Function = ({ label: name, filter: description, tree: n, length, start }: any) => {
-      const highlight = [start, length]
-      const out = {
-        name, description, highlight,
-        children: n?.map((item: any) => convert(item))
-      }
-      this.dataIndex.push(Functions.cloneObject(out));
-      return out;
-    };
-    this.dataTree = frameData?.tree?.map((frame: any) => convert(frame)) || [];
-    // console.log({ ws_this_dataIndex: this.dataIndex });
-    this.ngAfterViewInit();
-    this.cdr.detectChanges();
+    try {
+
+      this.frameHexDataBase64 = frameData.data_sources[0].data;
+      this.dataIndex = [];
+      const convert: Function = ({ label: name, filter: description, tree: n, length, start }: any) => {
+        const highlight = [start, length]
+        const out = {
+          name, description, highlight,
+          children: n?.map((item: any) => convert(item))
+        }
+        this.dataIndex.push(Functions.cloneObject(out));
+        return out;
+      };
+      this.dataTree = frameData?.tree?.map((frame: any) => convert(frame)) || [];
+      // console.log({ ws_this_dataIndex: this.dataIndex });
+      this.ngAfterViewInit();
+      this.cdr.detectChanges();
+    } catch (e) { }
   }
 
   showMessage(event: any) {

@@ -118,7 +118,7 @@
       </button>
     </mat-toolbar-row>
   </mat-toolbar>
-  <mat-drawer-container class="example-container" autosize>
+  <mat-drawer-container class="example-container"  style="flex: 1;" autosize>
     <mat-drawer #drawer class="example-sidenav" mode="side" [opened]="false">
       <app-files-page *ngIf="!isKIOSK" [isFile]="!isFileOnLink"></app-files-page>
     </mat-drawer>

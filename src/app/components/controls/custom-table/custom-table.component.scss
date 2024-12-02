@@ -34,7 +34,10 @@ table.this-table {
     background-color: #ffffff;
   }
 }
-
+.itemSelected {
+  background-color: #3f51b5 !important;
+  color: #fff !important;
+}
 .search-input {
   border: 0;
   background-color: $bgColor;
