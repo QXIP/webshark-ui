@@ -154,7 +154,7 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
     const indexesOfFrame = this.webSharkDataService.getFrameNumberByFilter(this.textFilterGrid)
 
     if (indexesOfFrame.length > 0) {
-      return indexesOfFrame.map(i => details[i+1]);
+      return indexesOfFrame.map(i => details[i]);
     } else {
       return details;
     }
