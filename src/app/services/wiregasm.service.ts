@@ -41,6 +41,7 @@ export class WiregasmService {
           const allFrames = await this.getAllFrameData();
           console.log('done parse all frames===>', allFrames);
           console.log('this.allFrameDataArray', this.allFrameDataArray);
+          console.log('this.allFrameDataArrayForFilter', this.allFrameDataArrayForFilter);
 
           this.updates.next(data);
         }
@@ -56,7 +57,20 @@ export class WiregasmService {
   }
 
 
+  public getFrameNumberByFilter(filterText: string = '') {
+    if(filterText === '') {
+      return [];
+    }
+    const outArray: any[] = [];
+    this.allFrameDataArrayForFilter.forEach((i, k) => {
+      if (i.includes(filterText)) {
+        outArray.push(k);
+      }
+    });
+    console.log('getFrameNumberByFilter::', filterText, outArray);
 
+    return outArray;
+  }
   public setFilter(filter: string) {
     console.warn('setFilter', filter)
     // 'filter='+encodeURIComponent(`sip.Via.received == "195.138.93.233"`)
@@ -128,12 +142,32 @@ export class WiregasmService {
     // }
     // return this.httpGet('frames', { limit });
   }
+
+
+  parseFrame(arrData: any[], isForFilter = true) {
+    const out: any = {};
+    const outFilter: any = [];
+    const parseTree = (arr: any) => {
+      arr.forEach((i: any) => {
+        const [key, val] = (i.filter).split(' == ');
+        out[key] = val;
+        outFilter.push(i.filter);
+        if (i.tree) {
+          parseTree(i.tree || [])
+        }
+      })
+    }
+    parseTree(arrData);
+    return isForFilter ? outFilter : out;
+  }
   allFrameDataArray: any[] = [];
+  allFrameDataArrayForFilter: any[] = [];
 
   async getAllFrameData(n = 1): Promise<any> {
     const out = (await this.getFrameData(n));
     // console.log({out})
     this.allFrameDataArray.push(out);
+    this.allFrameDataArrayForFilter.push(this.parseFrame(out?.tree || []))
     // console.log('frames => ', this._Frames);
     this.bs.next({
       isParsing: true,
@@ -150,9 +184,9 @@ export class WiregasmService {
     // this._frame1
 
     return new Promise((reason, reject) => {
-      if(this.allFrameDataArray[frameId]) {
-        console.log('frame exist', frameId, this.allFrameDataArray[frameId])
-        reason(this.allFrameDataArray[frameId])
+      if (this.allFrameDataArray[frameId-1]) {
+        console.log('frame exist', frameId-1, this.allFrameDataArray[frameId-1])
+        reason(this.allFrameDataArray[frameId-1])
 
         return;
       }

@@ -150,7 +150,14 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
     this.dblclick.emit({ data });
   }
   filterGrid(details: any) {
-    return details;
+    console.log('filterGrid', { details });
+    const indexesOfFrame = this.webSharkDataService.getFrameNumberByFilter(this.textFilterGrid)
+
+    if (indexesOfFrame.length > 0) {
+      return indexesOfFrame.map(i => details[i+1]);
+    } else {
+      return details;
+    }
   }
   onSelectedHex(x: any) {
     const arraySelected = this.getSelectedItems(x);
@@ -175,7 +182,7 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
   }
   setFilter(filter: any) {
     this.textFilterGrid = filter;
-    this.webSharkDataService.setFilter(this.textFilterGrid);
+    // this.webSharkDataService.setFilter(this.textFilterGrid);
   }
   onFilterEnter() {
     this.setFilter(this.textFilterGrid);
