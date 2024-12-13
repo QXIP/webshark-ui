@@ -19,10 +19,6 @@ export class WiregasmService {
   _Frames: any;
   _frame1: any;
 
-
-  // private url = ''//`${environment.apiUrl}json`;
-  // private urlUpload = ''//`${environment.apiUrl}upload`;
-
   isParsingProcess = false;
 
   private behavior = new BehaviorSubject({})
@@ -39,6 +35,7 @@ export class WiregasmService {
           this._frame1 = data.data.frame1;
 
           const allFrames = await this.getAllFrameData();
+          console.log('done parse all this._Frames===>', this._Frames);
           console.log('done parse all frames===>', allFrames);
           console.log('this.allFrameDataArray', this.allFrameDataArray);
           console.log('this.allFrameDataArrayForFilter', this.allFrameDataArrayForFilter);
@@ -58,7 +55,7 @@ export class WiregasmService {
 
 
   public getFrameNumberByFilter(filterText: string = '') {
-    if(filterText === '') {
+    if (filterText === '') {
       return [];
     }
     const outArray: any[] = [];
@@ -142,7 +139,34 @@ export class WiregasmService {
     // }
     // return this.httpGet('frames', { limit });
   }
-
+  getFlowItems() {
+    const out: any[] = [];
+    this.allFrameDataArrayForFilter.forEach((item: any, k: number) => {
+      const outItem = item.filter((j: any) => j.includes('ip.src') || j.includes('ip.dst'));
+      const nn = outItem.map((i: any) => i.split(' == ')[1]);
+      const n = nn.map((i: any) => this._hostsBuffer.findIndex(j => j == i))
+      let t = item.filter((j: any) => j.includes('frame.time == ')).join('').split(' == ')[1];
+      t = new Date(t).toLocaleTimeString() + '.' + new Date(t).getMilliseconds();
+      out.push({
+        c: this._Frames[k].colData[6],
+        t,
+        n,
+        pn: ['#000']
+      });
+      console.log(n, outItem)
+    })
+    return out;
+  }
+  private _hostsBuffer: any[] = []
+  getHosts() { // array of IPs
+    if (this._hostsBuffer.length == 0) {
+      this._hostsBuffer = [].concat([], ...this.allFrameDataArrayForFilter.map((i: any) => {
+        const out = i.filter((j: any) => j.includes('ip.src') || j.includes('ip.dst'));
+        return out.map((i: any) => i.split(' == ')[1]);
+      })).sort().filter((i, k, a) => a[k - 1] != i)
+    }
+    return this._hostsBuffer;
+  }
 
   parseFrame(arrData: any[], isForFilter = true) {
     const out: any = {};
@@ -184,9 +208,9 @@ export class WiregasmService {
     // this._frame1
 
     return new Promise((reason, reject) => {
-      if (this.allFrameDataArray[frameId-1]) {
-        console.log('frame exist', frameId-1, this.allFrameDataArray[frameId-1])
-        reason(this.allFrameDataArray[frameId-1])
+      if (this.allFrameDataArray[frameId - 1]) {
+        console.log('frame exist', frameId - 1, this.allFrameDataArray[frameId - 1])
+        reason(this.allFrameDataArray[frameId - 1])
 
         return;
       }

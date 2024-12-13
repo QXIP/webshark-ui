@@ -150,8 +150,7 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
     this.dblclick.emit({ data });
   }
   filterGrid(details: any) {
-    console.log('filterGrid', { details });
-    const indexesOfFrame = this.webSharkDataService.getFrameNumberByFilter(this.textFilterGrid)
+    const indexesOfFrame = this.webSharkDataService.getFrameNumberByFilter(this.textFilterGrid);
 
     if (indexesOfFrame.length > 0) {
       return indexesOfFrame.map(i => details[i]);

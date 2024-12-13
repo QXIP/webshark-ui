@@ -41,11 +41,22 @@ export class MenuStatComponent implements OnInit {
         { name: 'Response Time', children: [...srt, ...rtd] },
         { name: 'Statistics', children: [...stats, ...nstat] },
         { name: 'Export Objects', children: [...eo] },
-        { name: 'Misc', children: [{
-          name: 'RTP Rteams',
-          type: 'rtp-streams',
-          jsonData: {}
-        }] }
+        {
+          name: 'Misc', children: [
+            {
+              name: 'RTP Rteams',
+              type: 'rtp-streams',
+              jsonData: {}
+            },
+
+            {
+              name: 'Flow',
+              type: 'flow',
+              jsonData: {}
+            },
+
+          ]
+        }
       ];
       this.menuTree = menuCollection;
 
