@@ -2,6 +2,7 @@ import { ModalResizableService } from './../controls/modal-resizable/modal-resiz
 import { WebSharkDataService } from '@app/services/web-shark-data.service';
 import { Component, OnInit } from '@angular/core';
 import { environment } from '@environments/environment';
+import { WiregasmService } from '@app/services/wiregasm.service';
 
 
 declare const transcode: Function;
@@ -18,14 +19,14 @@ export class HomeComponent implements OnInit {
   dialogs: any[] = [];
   framePosition: any = ['vertical', 'horizontal'];
   constructor(
-    private webSharkDataService: WebSharkDataService,
+    private webSharkDataService: WiregasmService,
     private modalResizableService: ModalResizableService
   ) {
     this.isFileOnLink = !location.hash;
     this.files = this.isFileOnLink;
     this.modalResizableService.event.subscribe(({ open, data }) => {
       if (open) {
-        this.dialogs.push(data)
+        this.dialogs.push(data.link)
       }
     });
 
@@ -68,7 +69,7 @@ export class HomeComponent implements OnInit {
     this.dialogs = this.dialogs.filter((i, k) => k !== idx);
   }
   get captureFile() {
-    return this.webSharkDataService.getCapture();
+    return 'file.pcap' //this.webSharkDataService.getCapture();
   }
 
   downloadFile(filename: string) {

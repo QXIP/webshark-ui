@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { WebSharkDataService } from '@app/services/web-shark-data.service';
 import { ModalResizableService } from '../modal-resizable/modal-resizable.service';
+import { WiregasmService } from '@app/services/wiregasm.service';
 
 @Component({
   selector: 'app-menu-stat',
@@ -11,7 +12,7 @@ export class MenuStatComponent implements OnInit {
   menuTreeIndex: any;
   menuTree: any;
   constructor(
-    private webSharkDataService: WebSharkDataService,
+    private webSharkDataService: WiregasmService,
     private modalResizableService: ModalResizableService,
     private cdr: ChangeDetectorRef
   ) { }
@@ -19,8 +20,8 @@ export class MenuStatComponent implements OnInit {
   async ngOnInit() {
     const d = await this.initMenu();
   }
-  public onMenuClick(link: string, name: string) {
-    this.modalResizableService.open({ link, name });
+  public onMenuClick(link: any) {
+    this.modalResizableService.open({ link });
     this.cdr.detectChanges();
   }
 
@@ -30,9 +31,9 @@ export class MenuStatComponent implements OnInit {
       // console.log('MENU:ngOnInit()')
       const info = await this.webSharkDataService.getInfo();
       const {
-        stats, nstat, convs,
-        seqa, taps, eo,
-        srt, rtd
+        stats = [], nstat = [], convs = [],
+        seqa = [], taps = [], eo = [],
+        srt = [], rtd = []
       } = info;
 
       const menuCollection = [
@@ -40,7 +41,22 @@ export class MenuStatComponent implements OnInit {
         { name: 'Response Time', children: [...srt, ...rtd] },
         { name: 'Statistics', children: [...stats, ...nstat] },
         { name: 'Export Objects', children: [...eo] },
-        { name: 'Misc', children: [...taps, ...seqa] }
+        {
+          name: 'Misc', children: [
+            {
+              name: 'RTP Rteams',
+              type: 'rtp-streams',
+              jsonData: {}
+            },
+
+            {
+              name: 'Flow',
+              type: 'flow',
+              jsonData: {}
+            },
+
+          ]
+        }
       ];
       this.menuTree = menuCollection;
 

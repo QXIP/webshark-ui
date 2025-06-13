@@ -21,7 +21,7 @@
     <button
       mat-menu-item
       *ngFor="let item of menuTree[0].children; let idx = index"
-      (click)="onMenuClick(item.tap, item.name)"
+      (click)="onMenuClick(item)"
     >
       {{ item.name }}
     </button>
@@ -30,7 +30,7 @@
     <button
       mat-menu-item
       *ngFor="let item of menuTree[1].children; let idx = index"
-      (click)="onMenuClick(item.tap, item.name)"
+      (click)="onMenuClick(item)"
     >
       {{ item.name }}
     </button>
@@ -39,7 +39,7 @@
     <button
       mat-menu-item
       *ngFor="let item of menuTree[2].children; let idx = index"
-      (click)="onMenuClick(item.tap, item.name)"
+      (click)="onMenuClick(item)"
     >
       {{ item.name }}
     </button>
@@ -48,7 +48,7 @@
     <button
       mat-menu-item
       *ngFor="let item of menuTree[3].children; let idx = index"
-      (click)="onMenuClick(item.tap, item.name)"
+      (click)="onMenuClick(item)"
     >
       {{ item.name }}
     </button>
@@ -57,7 +57,7 @@
     <button
       mat-menu-item
       *ngFor="let item of menuTree[4].children; let idx = index"
-      (click)="onMenuClick(item.tap, item.name)"
+      (click)="onMenuClick(item)"
     >
       {{ item.name }}
     </button>

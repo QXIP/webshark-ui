@@ -138,6 +138,9 @@ export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy 
   сalcRangeByData(): any[] {
     const pudding = { x: 10, y: 0 }; // px
     const [firstData] = this.exampleData || [{ data: [] }];
+    if(!firstData?.data) {
+      return [0,0];
+    }
     const data = this.formattedData(firstData.data);
     const { offsetWidth } = this.canvas.nativeElement;
     const stepX = ((offsetWidth - pudding.x * 2) / (data.length));
@@ -149,6 +152,9 @@ export class FlexibleChartComponent implements OnInit, AfterViewInit, OnDestroy 
   getIndexOfData() {
     const pudding = { x: 10, y: 0 }; // px
     const [firstData] = this.exampleData;
+    if(!firstData?.data) {
+      return 0;
+    }
     const data = this.formattedData(firstData.data);
     const { offsetWidth } = this.canvas.nativeElement;
     const stepX = ((offsetWidth - pudding.x * 2) / (data.length));

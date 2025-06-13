@@ -4,14 +4,14 @@
 
       <div style="padding-right: 1rem">WebShark</div>
       <!-- <app-menu></app-menu> -->
-      <button
+      <!-- <button
         mat-raised-button
         *ngIf="captureFile"
         (click)="downloadFile(captureFile)"
       >
         <mat-icon class="mat-18">download</mat-icon>
         {{ captureFile }}
-      </button>
+      </button> -->
       <span style="flex: 1"></span>
       <flexible-chart
         chart
@@ -118,7 +118,7 @@
       </button>
     </mat-toolbar-row>
   </mat-toolbar>
-  <mat-drawer-container class="example-container" autosize>
+  <mat-drawer-container class="example-container"  style="flex: 1;" autosize>
     <mat-drawer #drawer class="example-sidenav" mode="side" [opened]="false">
       <app-files-page *ngIf="!isKIOSK" [isFile]="!isFileOnLink"></app-files-page>
     </mat-drawer>
@@ -138,5 +138,5 @@
   [title]="dialog.name || tapPage.title || '. . .'"
   (close)="onClose(idx)"
 >
-  <tap-page [taplink]="dialog.link" #tapPage></tap-page>
+  <tap-page [taplink]="dialog" #tapPage></tap-page>
 </modal-resizable>

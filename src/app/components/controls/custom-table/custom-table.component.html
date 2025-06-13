@@ -1,13 +1,9 @@
 <div
-  class="mat-elevation-z8"
-  style="
-    display: flex;
-    flex-direction: column;
-  "
+  style="display: flex; flex-direction: column; height: 100%;"
 >
   <cdk-virtual-scroll-viewport
     [tvsItemSize]="30"
-    style="height: 100%; min-height: 50vh"
+    style="height: 100%; min-height: 100%"
   >
     <table
       mat-table
@@ -37,7 +33,7 @@
             </div>
           </th>
           <td *matCellDef="let element">
-            {{ element[getKeyBy(item)] }}
+            {{ element?.[item] }}
           </td>
         </ng-container>
       </ng-container>
@@ -47,14 +43,9 @@
         <tr
           mat-row
           *matRowDef="let row; index as i; columns: columnsValue"
-          [style.background-color]="
-            getSelected(i) ? '#3f51b5' : row.bg && '#' + row.bg
-          "
-          [style.color]="
-            getSelected(i)
-              ? '#fff !important'
-              : row.fg && '#' + row.fg + ' !important'
-          "
+          [style.background-color]="row?.bg && '#' + row.bg"
+          [style.color]="row?.fg && '#' + row.fg + ' !important'"
+          [ngClass]="{itemSelected: getSelected(i)} "
           (click)="onRowClick(row, i, $event)"
           (dblclick)="onRowDblClick(row, i, $event)"
         ></tr>

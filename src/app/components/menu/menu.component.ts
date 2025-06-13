@@ -1,6 +1,7 @@
 import { ModalResizableService } from './../controls/modal-resizable/modal-resizable.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { WebSharkDataService } from '@app/services/web-shark-data.service';
+import { WiregasmService } from '@app/services/wiregasm.service';
 
 @Component({
   selector: 'app-menu',
@@ -12,7 +13,7 @@ export class MenuComponent implements OnInit {
   menuTree: any = null;
   menuTreeIndex: any = [];
   constructor(
-    private webSharkDataService: WebSharkDataService,
+    private webSharkDataService: WiregasmService,
     private modalResizableService: ModalResizableService,
     private cdr: ChangeDetectorRef
   ) { }
@@ -32,18 +33,18 @@ export class MenuComponent implements OnInit {
       this.menuTreeIndex = [];
       // console.log('MENU:ngOnInit()')
       const {
-        stats, nstat, convs,
-        seqa, taps, eo,
-        srt, rtd, columns,
-        ftypes, version, follow
+        stats = [], nstat = [], convs = [],
+        seqa = [], taps = [], eo = [],
+        srt = [], rtd = [], columns = [],
+        ftypes = [], version = [], follow = []
       } = await this.webSharkDataService.getInfo();
 
       const menuCollection = [
-        { name: 'Endpoints', children: [...convs] },
-        { name: 'Response Time', children: [...srt, ...rtd] },
-        { name: 'Statistics', children: [...stats, ...nstat] },
-        { name: 'Export Objects', children: [...eo] },
-        { name: 'Misc', children: [...taps, ...seqa] }
+        // { name: 'Endpoints', children: [...convs] },
+        // { name: 'Response Time', children: [...srt, ...rtd] },
+        // { name: 'Statistics', children: [...stats, ...nstat] },
+        // { name: 'Export Objects', children: [...eo] },
+        { name: 'menu', children: [...taps, ...seqa] }
       ];
 
       this.menuTree = menuCollection.map(menu => {
