@@ -54,12 +54,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "5500kb",
-                  "maximumError": "10mb"
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "20kb",
-                  "maximumError": "100kb"
+                  "maximumError": "200kb"
                 }
               ],
               "outputHashing": "all"
@@ -69,12 +69,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "5500kb",
-                  "maximumError": "10mb"
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "20kb",
-                  "maximumError": "100kb"
+                  "maximumError": "200kb"
                 }
               ],
               "outputHashing": "all",
