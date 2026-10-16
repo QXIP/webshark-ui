@@ -14,39 +14,47 @@ jobs:
     strategy:
       matrix:
         node-version: [20.x]
+        variant: [standard, kiosk]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Build
+    - name: Install
+      run: npm install
+    - name: Build (${{ matrix.variant }})
       run: |
-        npm install
-        npm run build:kiosk
-    - uses: actions/upload-artifact@master
+        if [ "${{ matrix.variant }}" = "kiosk" ]; then
+          npm run build:kiosk
+        else
+          npm run build
+        fi
+    - uses: actions/upload-artifact@v4
       if: startsWith(github.ref, 'refs/tags/')
       with:
-          name: dist
-          path: ./dist
-          retention-days: 1
+        name: dist-${{ matrix.variant }}
+        path: ./dist
+        retention-days: 1
 
   publish:
-    needs: build 
+    needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v4
         with:
-          name: dist
-      - name: Checkpoint
+          path: artifacts
+      - name: Package release zips
         run: |
-          ls -alFh webshark
-          cd webshark && sudo zip -r ../latest.zip .
+          ls -alFh artifacts/
+          cd artifacts/dist-standard/webshark && zip -r "$GITHUB_WORKSPACE/latest_raw.zip" .
+          cd "$GITHUB_WORKSPACE/artifacts/dist-kiosk/webshark" && zip -r "$GITHUB_WORKSPACE/latest.zip" .
+          ls -alFh "$GITHUB_WORKSPACE"/*.zip
       - name: Upload Release
-        uses: softprops/action-gh-release@v0.1.15
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             latest.zip
-
+            latest_raw.zip
