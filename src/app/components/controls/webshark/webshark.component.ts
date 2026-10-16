@@ -15,6 +15,7 @@ import { HighlightService } from '@app/services/hightlight.service';
 import { AlertService } from '../alert/alert.service';
 import { CustomTableComponent } from '../custom-table/custom-table.component';
 import { environment } from './../../../../environments/environment';
+import { WiregasmService } from '@app/services/wiregasm.service';
 
 @Component({
   selector: 'app-webshark',
@@ -60,7 +61,7 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
   @ViewChild('dataGridTable', { static: false }) dataGrid: any;
 
   constructor(
-    private webSharkDataService: WebSharkDataService,
+    private webSharkDataService: WiregasmService,
     private highlightService: HighlightService,
     private cdr: ChangeDetectorRef,
     private alertService: AlertService
@@ -83,23 +84,25 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
   }
 
   private async initData() {
-    try {
-      const data = await this.webSharkDataService.getFrames(0);
-      this.destDetailsTable = data.map((frame: any) => {
-        const [id, time, source, description, protocol, length, info] = frame.c;
-        const { bg, fg } = frame;
-        return { id, time, source, description, protocol, length, info, bg, fg };
-      });
-      this.detailsTable = this.destDetailsTable;
-      this.ready.emit([{
-        color: 'rgba(255,255,255, 0.8)',
-        data: this.destDetailsTable.map((i: any) => i.length * 1)
-      }]);
-      this.cdr.detectChanges();
-      this.setDefaultSelection();
-    } catch (error) {
-      return;
-    }
+    // try {
+    const data = await this.webSharkDataService.getFrames(0);
+    console.log('initData()', { data })
+    this.destDetailsTable = data.map((frame: any) => {
+      const [id, time, source, description, protocol, length, info] = frame.colData;
+      const { bg, fg } = frame;
+      return { id, time, source, description, protocol, length, info, bg, fg };
+    });
+    this.detailsTable = this.destDetailsTable;
+    this.ready.emit([{
+      color: 'rgba(255,255,255, 0.8)',
+      data: this.destDetailsTable.map((i: any) => i.length * 1)
+    }]);
+    this.cdr.detectChanges();
+    this.setDefaultSelection();
+    // } catch (error) {
+    //   console.log({error})
+    //   return;
+    // }
 
     this.initFrameData(1);
     this.cdr.detectChanges();
@@ -115,21 +118,26 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
   }
   private async initFrameData(frameId: number) {
     const frameData: any = await this.webSharkDataService.getFrameData(frameId);
-    // console.log({ frameData })
-    this.frameHexDataBase64 = frameData.bytes;
-    this.dataIndex = [];
-    const convert: Function = ({ l: name, f: description, h: highlight, n }: any) => {
-      const out = {
-        name, description, highlight,
-        children: n?.map((item: any) => convert(item))
-      }
-      this.dataIndex.push(Functions.cloneObject(out));
-      return out;
-    };
-    this.dataTree = frameData?.tree?.map((frame: any) => convert(frame)) || [];
-    // console.log({ ws_this_dataIndex: this.dataIndex });
-    this.ngAfterViewInit();
-    this.cdr.detectChanges();
+    console.log({ frameData })
+    // this.frameHexDataBase64 = frameData.bytes;
+    try {
+
+      this.frameHexDataBase64 = frameData.data_sources[0].data;
+      this.dataIndex = [];
+      const convert: Function = ({ label: name, filter: description, tree: n, length, start }: any) => {
+        const highlight = [start, length]
+        const out = {
+          name, description, highlight,
+          children: n?.map((item: any) => convert(item))
+        }
+        this.dataIndex.push(Functions.cloneObject(out));
+        return out;
+      };
+      this.dataTree = frameData?.tree?.map((frame: any) => convert(frame)) || [];
+      // console.log({ ws_this_dataIndex: this.dataIndex });
+      this.ngAfterViewInit();
+      this.cdr.detectChanges();
+    } catch (e) { }
   }
 
   showMessage(event: any) {
@@ -142,7 +150,13 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
     this.dblclick.emit({ data });
   }
   filterGrid(details: any) {
-    return details;
+    const indexesOfFrame = this.webSharkDataService.getFrameNumberByFilter(this.textFilterGrid);
+
+    if (indexesOfFrame.length > 0) {
+      return indexesOfFrame.map(i => details[i]);
+    } else {
+      return details;
+    }
   }
   onSelectedHex(x: any) {
     const arraySelected = this.getSelectedItems(x);
@@ -167,7 +181,7 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
   }
   setFilter(filter: any) {
     this.textFilterGrid = filter;
-    this.webSharkDataService.setFilter(this.textFilterGrid);
+    // this.webSharkDataService.setFilter(this.textFilterGrid);
   }
   onFilterEnter() {
     this.setFilter(this.textFilterGrid);

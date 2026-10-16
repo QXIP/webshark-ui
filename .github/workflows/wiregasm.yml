@@ -1,0 +1,46 @@
+name: Build and Publish Wiregasm
+
+on:
+  push:
+    branches:
+      - webshark-wiregasm-devel
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: webshark-wiregasm-devel
+
+      - name: Generate Dockerfile
+        run: |
+          cat <<EOF > Dockerfile
+          FROM node:20-alpine
+          WORKDIR /app
+          COPY . .
+          RUN npm install
+          RUN npm run build
+          EXPOSE 8003
+          CMD ["npm", "run", "start"]
+          EOF
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/qxip/webshark-ui:wasm
