@@ -144,12 +144,13 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
       return escapeHtml(raw);
     }
 
-    type Segment = { kind: 'text'; value: string } | { kind: 'mark'; value: string; color: string; redial: string };
+    type Segment = { kind: 'text'; value: string } | { kind: 'mark'; value: string; color: string };
     let segments: Segment[] = [{ kind: 'text', value: raw }];
 
     filters.forEach((filter, key) => {
-      const color = ['yellow', '#ffcaca', '#b7f875', '#86f2fb', '#DD99FF', '#eea371'][key % 6];
-      const redial = isRedial ? 'border-radius: 4px;' : 'color: black; border-radius: 2px;';
+      const markClass = isRedial
+        ? `filter-hit-radial-${key % 6}`
+        : `filter-hit-${key % 6}`;
       const next: Segment[] = [];
       for (const segment of segments) {
         if (segment.kind !== 'text') {
@@ -162,7 +163,7 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
           if (index > 0) {
             next.push({ kind: 'text', value: remaining.slice(0, index) });
           }
-          next.push({ kind: 'mark', value: filter, color, redial });
+          next.push({ kind: 'mark', value: filter, color: markClass });
           remaining = remaining.slice(index + filter.length);
         }
         if (remaining.length > 0) {
@@ -177,8 +178,7 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
         if (segment.kind === 'text') {
           return escapeHtml(segment.value);
         }
-        const style = `background-color: ${segment.color};${segment.redial}`;
-        return `<span style="${style}">${escapeHtml(segment.value)}</span>`;
+        return `<mark class="${segment.color}">${escapeHtml(segment.value)}</mark>`;
       })
       .join('');
   }
