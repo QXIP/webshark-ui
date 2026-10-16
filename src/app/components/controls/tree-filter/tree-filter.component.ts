@@ -1,4 +1,5 @@
 import { Functions } from '@app/helper/functions';
+import { escapeHtml } from '@app/helper/html-escape';
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, EventEmitter, Output, AfterViewInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
@@ -133,19 +134,53 @@ export class TreeFilterComponent implements OnInit, AfterViewInit {
       level: level,
     };
   }
-  highlight(text: any, isRedial = false) {
+  highlight(text: any, isRedial = false): string {
+    const raw = text == null ? '' : String(text);
     if (this.textFilterTree === '') {
-      return text;
+      return raw;
     }
-    const arr = this.textFilterTree.split('||');
-    let outText = text;
-    arr.forEach((f, key) => {
+    const filters = this.textFilterTree.split('||').filter((f) => f !== '');
+    if (filters.length === 0) {
+      return escapeHtml(raw);
+    }
+
+    type Segment = { kind: 'text'; value: string } | { kind: 'mark'; value: string; color: string; redial: string };
+    let segments: Segment[] = [{ kind: 'text', value: raw }];
+
+    filters.forEach((filter, key) => {
       const color = ['yellow', '#ffcaca', '#b7f875', '#86f2fb', '#DD99FF', '#eea371'][key % 6];
       const redial = isRedial ? 'border-radius: 4px;' : 'color: black; border-radius: 2px;';
-      const tag = `<span style="background-color: ${color};${redial}">${f}</span>`;
-      outText = f !== '' && outText.includes(f) ? outText.replaceAll(f, tag) : outText;
-    })
-    return outText;
+      const next: Segment[] = [];
+      for (const segment of segments) {
+        if (segment.kind !== 'text') {
+          next.push(segment);
+          continue;
+        }
+        let remaining = segment.value;
+        while (remaining.includes(filter)) {
+          const index = remaining.indexOf(filter);
+          if (index > 0) {
+            next.push({ kind: 'text', value: remaining.slice(0, index) });
+          }
+          next.push({ kind: 'mark', value: filter, color, redial });
+          remaining = remaining.slice(index + filter.length);
+        }
+        if (remaining.length > 0) {
+          next.push({ kind: 'text', value: remaining });
+        }
+      }
+      segments = next;
+    });
+
+    return segments
+      .map((segment) => {
+        if (segment.kind === 'text') {
+          return escapeHtml(segment.value);
+        }
+        const style = `background-color: ${segment.color};${segment.redial}`;
+        return `<span style="${style}">${escapeHtml(segment.value)}</span>`;
+      })
+      .join('');
   }
   isSelectedHexArray({ description }: any) {
     return this.selectedHexArray.map((i: any) => i.description).includes(description);

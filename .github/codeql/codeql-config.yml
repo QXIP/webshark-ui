@@ -1,0 +1,6 @@
+name: webshark-ui CodeQL
+
+paths-ignore:
+  # Vendored FFmpeg / Emscripten worker (third-party; not application logic)
+  - src/ffmpeg
+  - dist
