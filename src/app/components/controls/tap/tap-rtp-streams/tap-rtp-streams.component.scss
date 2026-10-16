@@ -60,7 +60,7 @@ $bgColor: rgba(black, 0.12);
 
     &.active {
       flex: 7;
-      border-color: mat.get-color-from-palette($primary);
+      border-color: mat.m2-get-color-from-palette($primary);
     }
 
     .player-controls {
@@ -75,7 +75,7 @@ $bgColor: rgba(black, 0.12);
       right: 0;
       bottom: -2.5rem;
       border: 3px solid;
-      border-color: mat.get-color-from-palette($primary);
+      border-color: mat.m2-get-color-from-palette($primary);
       width: 14rem;
       opacity: 0;
       transition: opacity 0.3s;

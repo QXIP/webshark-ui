@@ -1,5 +1,6 @@
 import { Functions, hash } from '@app/helper/functions';
 import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { WiregasmService } from '@app/services/wiregasm.service';
 
 @Component({
   selector: 'tap-flow',
@@ -22,9 +23,21 @@ export class TapFlowComponent implements OnInit, AfterViewInit, AfterContentInit
     }, 1500);
   }
 
-  constructor(private cdr: ChangeDetectorRef) { }
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private wiregasmService:WiregasmService
+  ) { }
 
   ngOnInit() {
+    const nodes = this.wiregasmService.getHosts();
+    const flows: any[] = this.wiregasmService.getFlowItems();;
+    this.colLength = nodes?.length || 0;
+    this.hosts = nodes || [];
+    this.flowItems = flows || [];
+    setTimeout(() => {
+      Functions.emitWindowResize();
+      this.cdr.detectChanges();
+    }, 1500);
   }
   ngAfterContentInit() {
     setTimeout(() => {
