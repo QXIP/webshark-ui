@@ -1,6 +1,7 @@
 import { WebSharkDataService } from '@app/services/web-shark-data.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter, Input } from '@angular/core';
 import { environment } from '@environments/environment';
+import { WiregasmService } from '@app/services/wiregasm.service';
 
 @Component({
   selector: 'app-files-page',
@@ -16,7 +17,7 @@ export class FilesPageComponent implements OnInit {
 
   @Output() fileChosen: EventEmitter<any> = new EventEmitter();
   constructor(
-    private webSharkDataService: WebSharkDataService,
+    private webSharkDataService: WiregasmService,
     private cdr: ChangeDetectorRef
   ) {
   }
@@ -39,7 +40,7 @@ export class FilesPageComponent implements OnInit {
     const mapping = (file: any, prefix: string = '/') => {
       if (file.dir === true) {
         const o: any = {
-          name: file.name + ` <i></i>[..loading]</i>`,
+          name: file.name + ` <i>[..loading]</i>`,
           description: prefix,
           children: []
         }
