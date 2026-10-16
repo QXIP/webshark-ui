@@ -32,6 +32,19 @@ $primary: map.get($my-theme, 'primary');
 
 
 :host {
+  ::ng-deep mark.filter-hit-0 { background-color: yellow; color: black; border-radius: 2px; }
+  ::ng-deep mark.filter-hit-1 { background-color: #ffcaca; color: black; border-radius: 2px; }
+  ::ng-deep mark.filter-hit-2 { background-color: #b7f875; color: black; border-radius: 2px; }
+  ::ng-deep mark.filter-hit-3 { background-color: #86f2fb; color: black; border-radius: 2px; }
+  ::ng-deep mark.filter-hit-4 { background-color: #DD99FF; color: black; border-radius: 2px; }
+  ::ng-deep mark.filter-hit-5 { background-color: #eea371; color: black; border-radius: 2px; }
+  ::ng-deep mark.filter-hit-radial-0 { background-color: yellow; border-radius: 4px; }
+  ::ng-deep mark.filter-hit-radial-1 { background-color: #ffcaca; border-radius: 4px; }
+  ::ng-deep mark.filter-hit-radial-2 { background-color: #b7f875; border-radius: 4px; }
+  ::ng-deep mark.filter-hit-radial-3 { background-color: #86f2fb; border-radius: 4px; }
+  ::ng-deep mark.filter-hit-radial-4 { background-color: #DD99FF; border-radius: 4px; }
+  ::ng-deep mark.filter-hit-radial-5 { background-color: #eea371; border-radius: 4px; }
+
   .filter-tree-node {
     height: 1rem;
   }
