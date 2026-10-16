@@ -64,6 +64,7 @@ export class CustomTableComponent {
   onRowClick(row: any, indexItem: any, event: any) {
     this.setSelected(indexItem);
     this.rowClick.emit({ row, indexItem, event });
+    this.cdr.detectChanges();
   }
   onRowDblClick(row: any, indexItem: any, event: any) {
     this.rowDblClick.emit({ row, indexItem, event });
