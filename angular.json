@@ -65,6 +65,13 @@
               "outputHashing": "all"
             },
             "kiosk": {
+              "optimization": false,
+              "sourceMap": true,
+              "namedChunks": false,
+              "aot": false,
+              "extractLicenses": false,
+              "vendorChunk": false,
+              "buildOptimizer": false,
               "budgets": [
                 {
                   "type": "initial",
