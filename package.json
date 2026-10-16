@@ -98,7 +98,7 @@
     "webpack-dev-middleware": "7.4.6",
     "webpack-dev-server": "5.2.6",
     "websocket-driver": "0.7.5",
-    "ws": "8.17.1",
+    "ws": "8.21.0",
     "http-cache-semantics": "4.3.0",
     "postcss-selector-parser": "7.1.6",
     "proxy-addr": "2.0.8",
